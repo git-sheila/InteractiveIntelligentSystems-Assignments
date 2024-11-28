@@ -37,6 +37,7 @@ def main():
     inputs = data.drop("emotion", axis=1)
 
     # split = 70/20/10
+    # creates test dataset
     data_in, test_in, data_out, test_out = train_test_split(
         inputs,
         labels,
@@ -44,6 +45,8 @@ def main():
         random_state=42,
         stratify=labels  # balances labels across the sets
     )
+    # splits data_in/out into train and validation dataset
+    #data out contains labels for train and validation
     train_in, val_in, train_out, val_out = train_test_split(
         data_in,
         data_out,
