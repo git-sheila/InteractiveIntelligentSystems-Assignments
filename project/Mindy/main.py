@@ -3,6 +3,7 @@ from EmotionDetectionModule import EmotionDetectionModule
 from FileHandler import FileHandler
 from LLMModule import LLMModule
 from BreathingGuide import BreathingGuide
+import time
 
 def main():
     # Initialize FurhatClient
@@ -15,18 +16,26 @@ def main():
     response = furhat_client.getResponse(user_response)
     furhat_client.speak(response)
 
-    # Initialize EmotionDetectionModule
+    # Initialize EmotionDetectionModule and start detection thread
     emotion_module = EmotionDetectionModule()
     emotion_module.init()
-    emotion_module.startDetection()
-    emotions = emotion_module.fetchFullDetectionList()
-    print(f"Emotions detected: {emotions}")
-    
-    emotion_module.startConversation()
-    final_emotion = emotion_module.stopConversation()
-    print(f"Final emotion detected: {final_emotion}")
+    emotion_module.startDetection()  # Start detection in a separate thread
 
-    # Initialize FileHandler
+    # Simulate running the detection process indefinitely (or until user stops it)
+    print("Emotion detection is running in the background. Press Ctrl+C to stop.")
+    try:
+        for _ in range(5):  # Simulate 10 seconds of main program running
+            time.sleep(2)
+            emotions = emotion_module.fetchFullDetectionList()
+            print(f"Current detected emotions: {emotions}")
+    except KeyboardInterrupt:
+        print("Main program interrupted. Stopping detection...")
+
+    # Stop conversation and get final emotion
+    final_emotion = emotion_module.stopConversation()
+    print(f"Final detected emotion: {final_emotion}")
+
+    # File handling example
     file_handler = FileHandler()
     file_name = "data.txt"
     data_to_write = f"User response: {user_response}, Emotion detected: {final_emotion}"
