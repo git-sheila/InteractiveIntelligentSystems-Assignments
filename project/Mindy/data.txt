@@ -1,1 +1,1 @@
-User response: Hi, Emotion detected: neutral
+User response: {'message': 'hi', 'success': True}, Emotion detected: anger
