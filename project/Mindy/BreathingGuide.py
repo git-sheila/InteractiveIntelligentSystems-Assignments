@@ -23,16 +23,16 @@ class BreathingGuide:
     def temp_exercise(self):
         self.furhatClient.speak("Temporary exercise is going on")
 
-    def breathing_exercise(self):
+    def breathing_exercise(self, time_inhale: int, time_hold: int, time_exhale: int):
         """ Start breathing exercise
         Args:
-            None
+            time_inhale: a number from 1 to 10 for inhale count
+            time_hold: a number from 1 to 10 for hold count
+            time_exhale: a number from 1 to 10 for exhale count
         Returns:
             None
         """
-        time_inhale=4
-        time_hold=4
-        time_exhale=4
+
         self.furhatClient.speak("Inhale deeply through your nose for " + str(time_inhale) + " seconds.")
         self.furhatClient.gesture_inhale(time_inhale)
 
