@@ -39,7 +39,7 @@ class EmotionDetectionModule:
             if not cap.isOpened():
                 print("Error: Could not open video.")
                 return
-            detector = Detector(device="cuda")
+            detector = Detector(device="cpu")
             recording = False
             last_emotion = None
             

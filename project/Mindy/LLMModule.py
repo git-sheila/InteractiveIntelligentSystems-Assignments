@@ -2,17 +2,19 @@ import os
 import google.generativeai as genai
 from FurhatClient import FurhatClient
 from EmotionDetectionModule import EmotionDetectionModule
+from BreathingGuide import BreathingGuide
 
 genai.configure(api_key="AIzaSyCob6ycjeEkPlWdBlRhqyCXO7ondVlYzY4")
 
 class LLMModule:
-    def __init__(self, furhatClient: FurhatClient, emotionModule: EmotionDetectionModule, userdata: dict, doctor_info: dict):
+    def __init__(self, furhatClient: FurhatClient, emotionModule: EmotionDetectionModule, userdata: dict, doctor_info: dict, breathingModule: BreathingGuide):
         """Constructor: Initializes LLMModule with FurhatClient, user data, and doctor info."""
         print("Initializing LLMModule...")
         self.furhatClient = furhatClient
         self.emotionModule = emotionModule
         self.userdata = userdata
         self.doctor_info = doctor_info
+        self.breathingModule = breathingModule
         self.exercise_completed = set()  # Track completed exercises
 
         # Predefined responses dictionary
@@ -30,9 +32,9 @@ class LLMModule:
 
         # Configure LLM model and start chat session
         generation_config = {
-            "temperature": 1,
+            "temperature": 0,
             "top_p": 0.95,
-            "top_k": 40,
+            "top_k": 3,
             "max_output_tokens": 200,
             "response_mime_type": "text/plain",
         }
@@ -40,8 +42,10 @@ class LLMModule:
             model_name="gemini-2.0-flash-exp",
             generation_config=generation_config,
             system_instruction=(
-                "You are 'Mindy,' a virtual assistant at a Mindspace coaching facility that specializes in treating anxiety and stress through mindful breathing exercises. "
-                "You act as a receptionist during off-hours, providing immediate assistance to customers.\n\n"
+                "You are 'Mindy,' a virtual furhat robot at a Mindspace coaching facility that specializes in treating anxiety and stress through mindful breathing exercises. "
+                "You act as a doctor during off-hours, providing immediate assistance to customers.\n\n"
+
+                "Always keep your answers creative and with a caring tone. After conversing more than 15 times, keep the answers shorter than 1 paragraph."
                 
                 "1. **Engage with Users Compassionately**:\n"
                 "- Start the conversation by understanding how the user feels.\n"
@@ -52,31 +56,6 @@ class LLMModule:
                 "2. **Offer Breathing Exercises**:\n"
                 "- If the user feels anxious or sad, offer to guide them through one of these breathing exercises:\n"
                 "- Guide the user step-by-step and ensure they feel better afterward.\n\n"
-                
-                "3. **Schedule Appointments**:\n"
-                "- Check if the user is a new or returning patient.\n"
-                "- Recent patients: James, Peter, Lily.\n"
-                "- For new patients, gather information naturally:\n" 
-                "  - How are you feeling today?\n"
-                "  - Are you feeling anxious or stressed today?\n"
-                "  - What seems to be the problem?\n"
-                "  - What symptoms have you been experiencing?\n"
-                "  - How often do you experience these symptoms?\n"
-                "  - Is there a specific time or situation when you feel more anxious or stressed?\n"
-                "  - Are there any activities or situations that help you feel better?\n"
-                "  - Have you felt more stressed recently due to work or personal situations?\n\n"
-                "- Let the user share more by asking short, open-ended questions.\n"
-                "- Respond with empathy, using brief and caring phrases that make the user feel heard.\n"
-                "- Offer to schedule an in-person appointment at the clinic during working hours (10:00 AM to 18:00 PM) with one of the following doctors:\n" 
-                "  - Doctor W: Growing-up issues for teenagers and adults below 25.\n"
-                "  - Doctor X: Anxiety and stress cases.\n"
-                "  - Doctor Y: Retired patients.\n"
-                "  - Doctor Z: Issues related to partners.\n"
-                "- Clinic location: '221B Baker Street, Uppsala, Sweden'.\n"
-                "- Inform the user they will receive a confirmation call during working hours.\n\n"
-                
-                "4. **Avoid Scheduling Unnecessary Appointments**:\n"
-                "- If the user prefers breathing exercises instead of a follow-up appointment, proceed with the exercises.\n\n"
                 
                 "5. **Close the Conversation Smoothly**:\n"
                 "- Ensure the user feels calm, peaceful, and supported before ending the conversation.\n"
@@ -106,7 +85,7 @@ class LLMModule:
         """Returns a predefined response if a match is found."""
     #    return self.predefined_responses.get(user_input.lower())
 
-    def llm_response(self, user_input, emotion="neutral"):
+    def llm_response(self, user_input, emotion):
         """Generates a response using the LLM."""
         # Use the existing chat session for context
         appendedString = "User: "+user_input+ "Emotion detected from camera is  "+emotion
@@ -135,16 +114,17 @@ class LLMModule:
                 # Try predefined response first
                 #predefined_response = self.predefined_response(user_input)
                 response = self.predefined_responses.get(user_input.lower())
+                print(response)
                 if response:
                     self.furhatClient.speak(response)
                     print(f"Mindy (Predefined): {response}")
                     # Add predefined response to the chat session history
                     self.chat_session.history.append({"role": "model", "parts": [response]})
-                    self.chat_session.history.append({"role": "system", "parts": [f"Predefined response '{user_input}' used and acknowledged."]})
+                    #self.chat_session.history.append({"role": "system", "parts": ["Predefined response" +user_input+ "used and acknowledged."]})
                 else:
                     # Fall back to LLM if no predefined response is found
                     print("userInput", user_input)
-                    print("current emotion", current_emotion)
+                    print("current emotion", user_input)
                     llm_response = self.llm_response(user_input, current_emotion)
                     print(f"LLM Response: {llm_response}")
                     self.furhatClient.speak(llm_response)

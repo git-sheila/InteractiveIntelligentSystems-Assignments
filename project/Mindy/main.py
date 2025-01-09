@@ -18,11 +18,19 @@ def main():
     furhat_client = FurhatClient()
     furhat_client.init()
 
-    llmModule = LLMModule(furhat_client,emotion_module, {},{})
+    # Define a breathing pattern and create an instance of BreathingGuide
+    breathing_pattern = {"inhale": 4, "hold": 7, "exhale": 8}
+    breathing_guide = BreathingGuide(breathing_pattern, furhat_client)
+
+    llmModule = LLMModule(furhat_client,emotion_module, {},{}, breathing_guide)
     llmModule.start()
 
     emotion_module.stopDetection() 
     
 
+
+
+
+    emotion_module.stopDetection()
 if __name__ == "__main__":
     main()
