@@ -24,12 +24,21 @@ class BreathingGuide:
         self.furhatClient.speak("Temporary exercise is going on")
 
     def breathing_exercise(self):
-        self.furhatClient.speak("Inhale deeply through your nose for 4 seconds.")
-        self.furhatClient.gesture_inhale(4)
+        """ Start breathing exercise
+        Args:
+            None
+        Returns:
+            None
+        """
+        time_inhale=4
+        time_hold=4
+        time_exhale=4
+        self.furhatClient.speak("Inhale deeply through your nose for " + str(time_inhale) + " seconds.")
+        self.furhatClient.gesture_inhale(time_inhale)
 
-        self.furhatClient.speak("Hold your breath for 4 seconds.")
-        self.furhatClient.gesture_hold(4)
+        self.furhatClient.speak("Hold your breath for " + str(time_hold) + " seconds.")
+        self.furhatClient.gesture_hold(time_hold)
 
-        self.furhatClient.speak("Exhale slowly through your mouth for 4 seconds.")
-        #Gesture to breathe out
-        self.furhatClient.gesture_exhale(4)
+        self.furhatClient.speak("Exhale slowly through your mouth for " + str(time_exhale) + " seconds.")
+        self.furhatClient.gesture_exhale(time_exhale)
+        return

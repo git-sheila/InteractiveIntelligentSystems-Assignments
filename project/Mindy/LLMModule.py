@@ -46,7 +46,7 @@ class LLMModule:
                 "You act as a doctor during off-hours, providing immediate assistance to customers.\n\n"
 
                 "Always keep your answers creative and with a caring tone. After conversing more than 15 times, keep the answers shorter than 1 paragraph."
-                
+                "When asked for a breathing exercise, call for the function, assume that the breathing exercise has completed and do not guide through any breathing exercise."
                 "1. **Engage with Users Compassionately**:\n"
                 "- Start the conversation by understanding how the user feels.\n"
                 "- Ask supportive questions to identify emotional states like anxiety, stress, or sadness.\n"
@@ -67,16 +67,17 @@ class LLMModule:
                 "- 'hi': 'Hi there! I'm here to guide you toward a calmer mind.'\n"
                 "- 'goodbye': 'Take care! Remember to breathe and stay grounded.'\n"
                 "- 'thank you': 'You're welcome! Let me know if you need more help.'\n"
-                "- 'breathing exercise': 'Let's begin with the 4-7-8 technique: Inhale for 4 seconds, hold for 7, and exhale for 8. Shall we start?'\n"
+                
                 "- 'calm me down': 'Try this: Inhale deeply through your nose for a count of 4, hold for 2 seconds, and then exhale slowly for a count of 6.'\n"
                 "- 'mindfulness tip': 'Take a moment to focus on your breathing. Notice how the air feels as you inhale and exhale.'\n"
                 "- 'features': 'I can help with breathing exercises, mindfulness tips, and tracking your progress toward calmness.'\n"
                 "- 'appointment': 'I can help you schedule an appointment with one of our doctors. Would you like to proceed?'\n\n"
                 "If a predefined response is used, acknowledge it in the chat session for context and proceed with the conversation seamlessly."
             ),
+            tools=[self.breathingModule.breathing_exercise]
         )
-        self.chat_session = self.model.start_chat(history=[])
-
+        self.chat_session = self.model.start_chat(history=[],enable_automatic_function_calling=True)
+    #"- 'breathing exercise': 'Let's begin with the 4-7-8 technique: Inhale for 4 seconds, hold for 7, and exhale for 8. Shall we start?'\n"
     def __del__(self):
         """Destructor: Cleans up LLMModule"""
         print("Destroying LLMModule...")
@@ -84,14 +85,20 @@ class LLMModule:
     # def predefined_response(self, user_input):
         """Returns a predefined response if a match is found."""
     #    return self.predefined_responses.get(user_input.lower())
+    
+ 
 
-    def llm_response(self, user_input, emotion):
-        """Generates a response using the LLM."""
-        # Use the existing chat session for context
-        appendedString = "User: "+user_input+ "Emotion detected from camera is  "+emotion
-        print("************SD  "+ appendedString)
-        llm_response = self.chat_session.send_message(appendedString)
-        return llm_response.text
+    def extract_text(self, llm_response):
+        # Navigate to the candidates and parts field
+
+        parts = llm_response.parts
+        for part in parts:
+            # Check if the part contains text
+            if "text" in part:
+                print ("Returning text")
+                return part
+        print ("Returning none, probably functioncall")
+        return None
 
     def start(self):
         """Starts the LLM process, using FurhatClient."""
@@ -119,13 +126,20 @@ class LLMModule:
                     self.furhatClient.speak(response)
                     print(f"Mindy (Predefined): {response}")
                     # Add predefined response to the chat session history
-                    self.chat_session.history.append({"role": "model", "parts": [response]})
+                    self.chat_session.history.append({"role": "model", "parts": {"text":[response]}})
                     #self.chat_session.history.append({"role": "system", "parts": ["Predefined response" +user_input+ "used and acknowledged."]})
                 else:
                     # Fall back to LLM if no predefined response is found
                     print("userInput", user_input)
                     print("current emotion", user_input)
-                    llm_response = self.llm_response(user_input, current_emotion)
-                    print(f"LLM Response: {llm_response}")
-                    self.furhatClient.speak(llm_response)
 
+                    appendedString = "User: "+user_input+ ". Emotion detected from camera is  "+current_emotion
+                    print("**Message to LLM: "+ appendedString)
+                    temp = self.chat_session.send_message(appendedString)
+                    print(temp)
+                    llm_response = self.extract_text(temp)
+                    print(llm_response)
+                    #print(f"LLM Response: {llm_response}")
+                    if llm_response and llm_response.text:
+                        self.furhatClient.speak(llm_response.text)
+                        self.chat_session.history.append({"role": "model", "parts": {"text":[llm_response.text]}})                        

@@ -39,22 +39,22 @@ class FurhatClient:
         print("Furhat set a gesture.")
     
     def gesture_inhale(self, inhale_time: int):
-        print("Inhaling for " + inhale_time + " seconds.")
+        print("Inhaling for " + str(inhale_time) + " seconds.")
         self.furhat.gesture(body={
             "frames": [
                 {
-                    "time": [0.25], #start of breathing in
+                    "time": [0.25], #start of breathing in=0.25
                     "params": {
                         "NECK_TILT": -1.0,       # Final neck lift for exaggerated breath
                     }
                 },            {
-                    "time": [0.5],
+                    "time": [inhale_time/8], #inhale_time/8=0.5
                     "params": {
                         "NECK_TILT": -7.0,       # Final neck lift for exaggerated breath
                     }
                 },
                 {
-                    "time": [1.0], 
+                    "time": [inhale_time/4], #inhale_time/4=1.0
                     "params": {
                         "NECK_TILT": -15.0,       # Final neck lift for exaggerated breath
                         "GAZE_TILT": 0.0,
@@ -68,7 +68,7 @@ class FurhatClient:
                     }
                 },
                 {
-                    "time": [2.0], #middle of breathing in
+                    "time": [inhale_time/2], #middle of breathing in   #inhale_time/2=2.0
                     "params": {
                         "NECK_TILT": -15.0,       # Final neck lift for exaggerated breath
                         "GAZE_TILT": 0.0,
@@ -82,7 +82,7 @@ class FurhatClient:
                     }
                 },
                 {
-                    "time": [3.75], #End of breathing in and start of bolding breath
+                    "time": [inhale_time - 0.25], #End of breathing in and start of bolding breath #inhale_time - 0.25=3.75
                     "params": {
                         "NECK_TILT": -3.0,       # Final neck lift for exaggerated breath
                         "GAZE_TILT": 0.0,
@@ -99,25 +99,26 @@ class FurhatClient:
                     }
                 },
                 {
-                    "time": [4.0],
+                    "time": [inhale_time],  #inhale_time=4.0
                     "params": {
                         "NECK_TILT": -1.0,       # Final neck lift for exaggerated breath
                         "SMILE_CLOSED": 1.0        # Slightly open smile for realism                    
                     }
                 },
                 {
-                    "time": [4.25],
+                    "time": [inhale_time + 0.25], #inhale_time + 0.25=4.25
                     "params": {
                         "reset": False            # Return to neutral
                     }
                 }
             ],
             "class": "furhatos.gestures.Gesture"
-        })
+        },
+    blocking=True)
 
 
     def gesture_hold(self, hold_time: int):
-        print("Hold breath for " + hold_time + " seconds.")
+        print("Hold breath for " + str(hold_time) + " seconds.")
         self.furhat.gesture(body={
             "frames": [
                             {
@@ -138,25 +139,25 @@ class FurhatClient:
                     }
                 },
                 {
-                    "time": [1.0], 
+                    "time": [hold_time/4], #hold_time/4=1.0
                     "params": {
                         "NECK_TILT": -3.0
                     }
                 },
                 {
-                    "time": [2.0], 
+                    "time": [hold_time/2], #hold_time/2=2.0
                     "params": {
                         "NECK_TILT": -4.0
                     }
                 },
                 {
-                    "time": [3.0], 
+                    "time": [hold_time*3/4], #hold_time*3/4=3.0
                     "params": {
                         "NECK_TILT": -3.0
                     }
                 },
                 {
-                    "time": [4.0], #End of bolding breath
+                    "time": [hold_time], #End of bolding breath #hold_time=4.0
                     "params": {
                         "NECK_TILT": -2.0,       # Final neck lift for exaggerated breath
                         "GAZE_TILT": 0.0,
@@ -173,17 +174,18 @@ class FurhatClient:
                     }
                 },
                 {
-                    "time": [4.25],
+                    "time": [hold_time + 0.25],#hold_time + 0.25
                     "params": {
                         "reset": False            # Return to neutral
                     }
                 }
             ],
             "class": "furhatos.gestures.Gesture"
-        })
+        },
+    blocking=True)
 
     def gesture_exhale(self, exhale_time: int):
-        print("Exhaling for " + exhale_time + " seconds.")
+        print("Exhaling for " + str(exhale_time) + " seconds.")
         self.furhat.gesture(body={
             "frames": [
                             {
@@ -224,25 +226,25 @@ class FurhatClient:
                     }
                 },
                 {
-                    "time": [1.25],
+                    "time": [exhale_time/4 + 0.25], #exhale_time/4 + 0.25 = 1.25
                     "params": {
                         "PHONE_OOH_Q": 0.7
                     }
                 },
                 {
-                    "time": [2.0], 
+                    "time": [exhale_time/2], #exhale_time/2 = 2.0
                     "params": {
                         "PHONE_OOH_Q": 1
                     }
                 },
                 {
-                    "time": [3.0], 
+                    "time": [exhale_time*3/4], #exhale_time*3/4=3.0
                     "params": {
                         "PHONE_OOH_Q": 1
                     }
                 },
                 {
-                    "time": [4.0], #end
+                    "time": [exhale_time], #end #exhale_time=4.0
                     "params": {
                         "NECK_TILT": 0.0,       # Final neck lift for exaggerated breath
                         "GAZE_TILT": 0.0,
@@ -256,12 +258,12 @@ class FurhatClient:
                     }
                 },            
                 {
-                    "time": [4.5],
+                    "time": [exhale_time + 0.5], #exhale_time + 0.5=4.5
                     "params": {
                         "reset": True            # Return to neutral
                     }
                 }
             ],
             "class": "furhatos.gestures.Gesture"
-        })
-
+        },
+    blocking=True)
