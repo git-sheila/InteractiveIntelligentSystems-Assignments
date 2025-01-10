@@ -26,11 +26,5 @@ def main():
     llmModule.start()
 
     emotion_module.stopDetection() 
-    
-
-
-
-
-    emotion_module.stopDetection()
 if __name__ == "__main__":
     main()

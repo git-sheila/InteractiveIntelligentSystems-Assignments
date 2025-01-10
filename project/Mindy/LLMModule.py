@@ -4,8 +4,6 @@ from FurhatClient import FurhatClient
 from EmotionDetectionModule import EmotionDetectionModule
 from BreathingGuide import BreathingGuide
 
-genai.configure(api_key="AIzaSyCob6ycjeEkPlWdBlRhqyCXO7ondVlYzY4")
-
 class LLMModule:
     def __init__(self, furhatClient: FurhatClient, emotionModule: EmotionDetectionModule, userdata: dict, doctor_info: dict, breathingModule: BreathingGuide):
         """Constructor: Initializes LLMModule with FurhatClient, user data, and doctor info."""
@@ -86,17 +84,11 @@ class LLMModule:
             tools=[self.breathingModule.breathing_exercise]
         )
         self.chat_session = self.model.start_chat(history=[],enable_automatic_function_calling=True)
-    #"- 'breathing exercise': 'Let's begin with the 4-7-8 technique: Inhale for 4 seconds, hold for 7, and exhale for 8. Shall we start?'\n"
+ 
     def __del__(self):
         """Destructor: Cleans up LLMModule"""
         print("Destroying LLMModule...")
-
-    # def predefined_response(self, user_input):
-        """Returns a predefined response if a match is found."""
-    #    return self.predefined_responses.get(user_input.lower())
-    
  
-
     def extract_text(self, llm_response):
         # Navigate to the candidates and parts field
 
@@ -136,19 +128,14 @@ class LLMModule:
                     print(f"Mindy (Predefined): {response}")
                     # Add predefined response to the chat session history
                     self.chat_session.history.append({"role": "model", "parts": {"text":[response]}})
-                    #self.chat_session.history.append({"role": "system", "parts": ["Predefined response" +user_input+ "used and acknowledged."]})
                 else:
                     # Fall back to LLM if no predefined response is found
-                    print("userInput", user_input)
-                    print("current emotion", user_input)
-
                     appendedString = "User: "+user_input+ ". Emotion detected from camera is  "+current_emotion
                     print("**Message to LLM: "+ appendedString)
                     temp = self.chat_session.send_message(appendedString)
                     print(temp)
                     llm_response = self.extract_text(temp)
                     print(llm_response)
-                    #print(f"LLM Response: {llm_response}")
                     if llm_response and llm_response.text:
                         self.furhatClient.speak(llm_response.text)
                         self.chat_session.history.append({"role": "model", "parts": {"text":[llm_response.text]}})                        
