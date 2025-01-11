@@ -16,14 +16,18 @@ class FurhatClient:
 
     def speak(self, message: str):
         """Simulates speaking a message."""
+        self.furhat.set_led(red=255, green=191, blue=128) #ombre yellow
         self.furhat.say(text=message, blocking=True)
         print(f"Furhat speaks: {message}")
+        self.furhat.set_led(red=0, green=0, blue=0) #black or no light
 
     def listen(self) -> str:
         """Simulates listening and returns a sample input."""
+        self.furhat.set_led(red=144, green=238, blue=144) #gentle green
         response = self.furhat.listen()
         message = getattr(response, 'message', '') 
         print(f"Furhat listened: {message}")
+        self.furhat.set_led(red=0, green=0, blue=0)
         return message
 
     def getResponse(self, query: str) -> str:
@@ -43,6 +47,7 @@ class FurhatClient:
     
     def gesture_inhale(self, inhale_time: int):
         print("Inhaling for " + str(inhale_time) + " seconds.")
+        self.furhat.set_led(red=102, green=205, blue=170) #Soothing Aqua
         self.furhat.gesture(body={
             "frames": [
                 {
@@ -122,6 +127,7 @@ class FurhatClient:
 
     def gesture_hold(self, hold_time: int):
         print("Hold breath for " + str(hold_time) + " seconds.")
+        self.furhat.set_led(red=221, green=160, blue=221) #Soft lavender
         self.furhat.gesture(body={
             "frames": [
                             {
@@ -189,6 +195,7 @@ class FurhatClient:
 
     def gesture_exhale(self, exhale_time: int):
         print("Exhaling for " + str(exhale_time) + " seconds.")
+        self.furhat.set_led(red=255, green=182, blue=193) #Muted peach
         self.furhat.gesture(body={
             "frames": [
                             {
@@ -269,4 +276,5 @@ class FurhatClient:
             ],
             "class": "furhatos.gestures.Gesture"
         },
-    blocking=True)
+        blocking=True)
+        self.furhat.set_led(red=0, green=0, blue=0) #black or no color

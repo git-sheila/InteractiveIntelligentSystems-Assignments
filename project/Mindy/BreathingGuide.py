@@ -33,12 +33,12 @@ class BreathingGuide:
             None
         """
 
-        self.furhatClient.speak("Inhale deeply through your nose for " + str(time_inhale) + " seconds.")
+        self.furhatClient.speak("Inhale deeply through your nose for " + str(int(time_inhale)) + " seconds.")
         self.furhatClient.gesture_inhale(time_inhale)
 
-        self.furhatClient.speak("Hold your breath for " + str(time_hold) + " seconds.")
+        self.furhatClient.speak("Hold your breath for " + str(int(time_hold)) + " seconds.")
         self.furhatClient.gesture_hold(time_hold)
 
-        self.furhatClient.speak("Exhale slowly through your mouth for " + str(time_exhale) + " seconds.")
+        self.furhatClient.speak("Exhale slowly through your mouth for " + str(int(time_exhale)) + " seconds.")
         self.furhatClient.gesture_exhale(time_exhale)
         return
