@@ -1,15 +1,17 @@
-import os
-import google.generativeai as genai
-from FurhatClient import FurhatClient
-from EmotionDetectionModule import EmotionDetectionModule
 from BreathingGuide import BreathingGuide
+from EmotionDetectionModule import EmotionDetectionModule
+from FurhatClient import FurhatClient
+import google.generativeai as genai
+import threading
 
 genai.configure(api_key="AIzaSyCob6ycjeEkPlWdBlRhqyCXO7ondVlYzY4")
 
 class LLMModule:
-    def __init__(self, furhatClient: FurhatClient, emotionModule: EmotionDetectionModule, userdata: dict, doctor_info: dict, breathingModule: BreathingGuide):
+    def __init__(self, webcam_ready_event, done_event,furhatClient: FurhatClient, emotionModule: EmotionDetectionModule, userdata: dict, doctor_info: dict, breathingModule: BreathingGuide ):
         """Constructor: Initializes LLMModule with FurhatClient, user data, and doctor info."""
         print("Initializing LLMModule...")
+        self.webcam_ready_event = webcam_ready_event
+        self.done_event = done_event
         self.furhatClient = furhatClient
         self.emotionModule = emotionModule
         self.userdata = userdata
@@ -95,7 +97,6 @@ class LLMModule:
         """Returns a predefined response if a match is found."""
     #    return self.predefined_responses.get(user_input.lower())
     
- 
 
     def extract_text(self, llm_response):
         # Navigate to the candidates and parts field
@@ -112,9 +113,10 @@ class LLMModule:
     def start(self):
         """Starts the LLM process, using FurhatClient."""
         print("Starting LLM module...")
+        self.webcam_ready_event.wait()
         self.furhatClient.speak("I am ready to assist you.")
 
-        while True:  # Main interaction loop
+        while not self.done_event.is_set():  # Main interaction loop
             user_input = self.furhatClient.listen()
             if user_input:
                 if user_input.lower() in ["exit", "quit", "bye", "stop"]:  # Exit condition

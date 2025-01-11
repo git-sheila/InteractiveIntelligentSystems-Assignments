@@ -38,6 +38,9 @@ class FurhatClient:
         """Simulates setting a gesture."""
         print("Furhat set a gesture.")
     
+    def attendLocation(self, loc: str):
+        self.furhat.attend(location=loc)
+    
     def gesture_inhale(self, inhale_time: int):
         print("Inhaling for " + str(inhale_time) + " seconds.")
         self.furhat.gesture(body={

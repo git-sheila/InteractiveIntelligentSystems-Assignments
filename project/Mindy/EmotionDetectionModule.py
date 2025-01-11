@@ -2,13 +2,15 @@ import threading
 import time
 
 import cv2
-from furhat_remote_api import FurhatRemoteAPI
+#from furhat_remote_api import FurhatRemoteAPI
 from feat import Detector
 from feat.utils import FEAT_EMOTION_COLUMNS
 from PIL import Image as PILImage
+from FurhatClient import FurhatClient
+
 
 class EmotionDetectionModule:
-    def __init__(self, webcam_ready_event, done_event):
+    def __init__(self, webcam_ready_event, done_event, furhatClient: FurhatClient):
         """
         Constructor: Initializes EmotionDetectionModule
         :param webcam_ready_event: threading.Event to signal webcam readiness
@@ -20,6 +22,8 @@ class EmotionDetectionModule:
         self._is_detecting = False
         self._detection_thread = None
         self.stable_emotion = None
+        self.location_coordinates = None
+        self.furhatClient = furhatClient
 
     def __del__(self):
         """ Destructor: Cleans up and stops the emotion detection thread """
@@ -40,7 +44,6 @@ class EmotionDetectionModule:
                 print("Error: Could not open video.")
                 return
             detector = Detector(device="cpu")
-            recording = False
             last_emotion = None
             
             emotion_stability_count = 0  # Tracks stability of emotion
@@ -61,6 +64,20 @@ class EmotionDetectionModule:
                 if len(faces) > 0:
                     strongest_emotion = emotions.argmax(axis=1)[0]  # Get the strongest emotion
                     current_emotion = FEAT_EMOTION_COLUMNS[strongest_emotion]
+
+                    print("********* The face is " + str(faces) + "*******************************")
+                    updown,leftright,temp = frame.shape
+                    x_min, y_min, x_max, y_max, confidence = faces[0]
+
+                    # Calculate center coordinates
+                    x_center = (x_min + x_max) / 2
+                    y_center = (y_min + y_max) / 2
+                    x_coordinate = round((leftright/2-x_center), 2)
+                    y_coordinate = round((updown/2-y_center), 2)
+                    self.location_coordinates = "{:.2f},{:.2f},2".format(1*x_coordinate/leftright, 1*y_coordinate/updown)
+
+                    self.furhatClient.attendLocation(self.location_coordinates)
+                    print("********* The location is " + self.location_coordinates + "*******************************")
                     
                     print("Current emotion:", current_emotion)
                     # Check stability
@@ -94,6 +111,12 @@ class EmotionDetectionModule:
             return self.stable_emotion
         else:
             return ""
+    
+    def fetchLocation(self) -> str:
+        if self.location_coordinates:
+            return self.location_coordinates
+        else:
+            return "0,0,0"
         
     def stopDetection(self):
         """ Stops the detection thread and returns the final detected emotion."""
