@@ -201,7 +201,7 @@ class FurhatClient:
             None
         """
         print("Smile gesture")
-        self.furhat.gesture(name="SMILE_OPEN")
+        self.furhat.gesture(name="Smile")
     
     def gesture_bigsmile(self):
         """ Start a big smile in face
@@ -211,28 +211,8 @@ class FurhatClient:
             None
         """
         print("Big Smile gesture")
-        self.furhat.gesture(body={
-            "name":"BigSmile",
-            "frames":[
-                {
-                "time":[0.32,0.64],
-                "persist":False,
-                "params":{
-                    "BROW_UP_LEFT":1,
-                    "BROW_UP_RIGHT":1,
-                    "SMILE_OPEN":0.4,
-                    "SMILE_CLOSED":0.7
-                    }
-                },
-                {
-                "time":[0.96],
-                "persist":False,
-                "params":{
-                    "reset":True
-                    }
-                }],
-            "class":"furhatos.gestures.Gesture"
-        })
+        self.furhat.gesture(name="BigSmile")
+
 
     def gesture_exhale(self, exhale_time: int):
         print("Exhaling for " + str(exhale_time) + " seconds.")
@@ -319,3 +299,163 @@ class FurhatClient:
         },
         blocking=True)
         self.furhat.set_led(red=0, green=0, blue=0) #black or no color
+
+    def gesture_blink(self):
+        """ Start a Blink gesture in face
+        Args:
+            None
+        Returns:
+            None
+        """
+        print("Blink gesture")
+        self.furhat.gesture(name="Blink")
+
+    def gesture_browfrown(self):
+        """ Start a BrowFrown gesture in face
+        Args:
+            None
+        Returns:
+            None
+        """
+        print("BrowFrown gesture")
+        self.furhat.gesture(name="BrowFrown")
+
+    def gesture_browraise(self):
+        """ Start a BrowRaise gesture in face
+        Args:
+            None
+        Returns:
+            None
+        """
+        print("BrowRaise gesture")
+        self.furhat.gesture(name="BrowRaise")
+
+    def gesture_closeeyes(self):
+        """ Start a CloseEyes gesture in face
+        Args:
+            None
+        Returns:
+            None
+        """
+        print("CloseEyes gesture")
+        self.furhat.gesture(name="CloseEyes")
+
+    def gesture_expressanger(self):
+        """ Start an ExpressAnger gesture in face
+        Args:
+            None
+        Returns:
+            None
+        """
+        print("ExpressAnger gesture")
+        self.furhat.gesture(name="ExpressAnger")
+
+    def gesture_expressdisgust(self):
+        """ Start an ExpressDisgust gesture in face
+        Args:
+            None
+        Returns:
+            None
+        """
+        print("ExpressDisgust gesture")
+        self.furhat.gesture(name="ExpressDisgust")
+
+    def gesture_expressfear(self):
+        """ Start an ExpressFear gesture in face
+        Args:
+            None
+        Returns:
+            None
+        """
+        print("ExpressFear gesture")
+        self.furhat.gesture(name="ExpressFear")
+
+    def gesture_expresssad(self):
+        """ Start an ExpressSad gesture in face
+        Args:
+            None
+        Returns:
+            None
+        """
+        print("ExpressSad gesture")
+        self.furhat.gesture(name="ExpressSad")
+
+    def gesture_gazeaway(self):
+        """ Start a GazeAway gesture in face
+        Args:
+            None
+        Returns:
+            None
+        """
+        print("GazeAway gesture")
+        self.furhat.gesture(name="GazeAway")
+
+    def gesture_nod(self):
+        """ Start a Nod gesture in face
+        Args:
+            None
+        Returns:
+            None
+        """
+        print("Nod gesture")
+        self.furhat.gesture(name="Nod")
+
+    def gesture_oh(self):
+        """ Start an Oh gesture in face
+        Args:
+            None
+        Returns:
+            None
+        """
+        print("Oh gesture")
+        self.furhat.gesture(name="Oh")
+
+    def gesture_roll(self):
+        """ Start a Roll gesture in face
+        Args:
+            None
+        Returns:
+            None
+        """
+        print("Roll gesture")
+        self.furhat.gesture(name="Roll")
+
+    def gesture_shake(self):
+        """ Start a Shake gesture in face
+        Args:
+            None
+        Returns:
+            None
+        """
+        print("Shake gesture")
+        self.furhat.gesture(name="Shake")
+
+    def gesture_surprise(self):
+        """ Start a Surprise gesture in face
+        Args:
+            None
+        Returns:
+            None
+        """
+        print("Surprise gesture")
+        self.furhat.gesture(name="Surprise")
+
+    def gesture_thoughtful(self):
+        """ Start a Thoughtful gesture in face
+        Args:
+            None
+        Returns:
+            None
+        """
+        print("Thoughtful gesture")
+        self.furhat.gesture(name="Thoughtful")
+
+    def gesture_wink(self):
+        """ Start a Wink gesture in face
+        Args:
+            None
+        Returns:
+            None
+        """
+        print("Wink gesture")
+        self.furhat.gesture(name="Wink")

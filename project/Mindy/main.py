@@ -1,6 +1,5 @@
 from FurhatClient import FurhatClient
 from EmotionDetectionModule import EmotionDetectionModule
-from FileHandler import FileHandler
 from LLMModule import LLMModule
 from BreathingGuide import BreathingGuide
 import time
