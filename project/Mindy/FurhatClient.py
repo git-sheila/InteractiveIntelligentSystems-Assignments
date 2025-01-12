@@ -193,6 +193,47 @@ class FurhatClient:
         },
     blocking=True)
 
+    def gesture_smile(self):
+        """ Start a smile in face
+        Args:
+            None
+        Returns:
+            None
+        """
+        print("Smile gesture")
+        self.furhat.gesture(name="SMILE_OPEN")
+    
+    def gesture_bigsmile(self):
+        """ Start a big smile in face
+        Args:
+            None
+        Returns:
+            None
+        """
+        print("Big Smile gesture")
+        self.furhat.gesture(body={
+            "name":"BigSmile",
+            "frames":[
+                {
+                "time":[0.32,0.64],
+                "persist":False,
+                "params":{
+                    "BROW_UP_LEFT":1,
+                    "BROW_UP_RIGHT":1,
+                    "SMILE_OPEN":0.4,
+                    "SMILE_CLOSED":0.7
+                    }
+                },
+                {
+                "time":[0.96],
+                "persist":False,
+                "params":{
+                    "reset":True
+                    }
+                }],
+            "class":"furhatos.gestures.Gesture"
+        })
+
     def gesture_exhale(self, exhale_time: int):
         print("Exhaling for " + str(exhale_time) + " seconds.")
         self.furhat.set_led(red=255, green=182, blue=193) #Muted peach
