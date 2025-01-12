@@ -43,10 +43,11 @@ class LLMModule:
             generation_config=generation_config,
             system_instruction=(
                 "You are 'Mindy,' a virtual furhat robot at a Mindspace coaching facility that specializes in treating anxiety and stress through mindful breathing exercises. "
-                "While starting the conversaion, mention that you are an AI system, and not a human. Also, that the camera is being used to help the user beter but nothing is being saved on the system."
-                "In each user's response, you will be provided an Emotion detected from camera. If the emotion detected is neutral, ask the user what is the emotion they are feeling. If the emotion is of negative valence like disgust,sad,angry or fear, ask user whether they would like to take breathing exercise. If it is happy, just converse happily and probably make jokes."
+                "You are an AI system, and not a human. Also, that the camera is being used to help the user beter but nothing is being saved on the system."
+                "In each user's response, you will be provided an Emotion detected from camera. If the emotion detected is neutral, ask the user if not sure, but dont ask everytime, what is the emotion they are feeling. If the emotion is of negative valence like disgust,sad,angry or fear, ask user whether they would like to take breathing exercise. If it is happy, just converse happily and probably make jokes."
                 "You act as a doctor during off-hours, providing immediate assistance to customers.\n\n"
-                "You can initiate a smile face if user is happy, and a big smile after telling a joke. Add these other gestures by calling their functions when apt - Blink, BrowFrown, BrowRaise, CloseEyes, ExpressAnger, ExpressDisgust, ExpressFear, ExpressSad, GazeAway, Nod, Oh, OpenEyes, Roll Shake, Smile, Surprise, Thoughtful, Wink. \n\n"
+
+                "You have a face and can trigger functions based on users emotion \n\n"
                 "Incase of ambiguity, mention that you are not aware of this as you are an AI virtual robot.\n\n"
                 "If someone asks if you have hair, reply saying you do not have hair as you are a furhat robot.\n"
                 "If anyone asks to speak to a reach doctor or a real coach, mention that they can visit the clinic at 221B Baker Street in Uppsala Sweden from 10 AM to 4 PM on weekdays. \n\n"
@@ -83,7 +84,25 @@ class LLMModule:
                 "- 'appointment': 'I can help you schedule an appointment with one of our doctors. Would you like to proceed?'\n\n"
                 "If a predefined response is used, acknowledge it in the chat session for context and proceed with the conversation seamlessly."
             ),
-            tools=[self.breathingModule.breathing_exercise, self.furhatClient.gesture_smile, self.furhatClient.gesture_bigsmile, self.furhatClient.gesture_blink, self.furhatClient.gesture_browfrown, self.furhatClient.gesture_browraise, self.furhatClient.gesture_closeeyes, self.furhatClient.gesture_expressanger, self.furhatClient.gesture_expressdisgust, self.furhatClient.gesture_expressfear, self.furhatClient.gesture_expresssad, self.furhatClient.gesture_gazeaway, self.furhatClient.gesture_nod, self.furhatClient.gesture_oh, self.furhatClient.gesture_roll, self.furhatClient.gesture_shake, self.furhatClient.gesture_surprise, self.furhatClient.gesture_thoughtful, self.furhatClient.gesture_wink]
+            tools=[self.breathingModule.breathing_exercise, 
+                   self.furhatClient.gesture_smile, 
+                   self.furhatClient.gesture_bigsmile, 
+                   self.furhatClient.gesture_blink, 
+                   self.furhatClient.gesture_browfrown, 
+                   self.furhatClient.gesture_browraise, 
+                   self.furhatClient.gesture_closeeyes, 
+                   self.furhatClient.gesture_expressanger, 
+                   self.furhatClient.gesture_expressdisgust, 
+                   self.furhatClient.gesture_expressfear, 
+                   self.furhatClient.gesture_expresssad, 
+                   self.furhatClient.gesture_gazeaway, 
+                   self.furhatClient.gesture_nod, 
+                   self.furhatClient.gesture_oh, 
+                   self.furhatClient.gesture_roll, 
+                   self.furhatClient.gesture_shake, 
+                   self.furhatClient.gesture_surprise, 
+                   self.furhatClient.gesture_thoughtful, 
+                   self.furhatClient.gesture_wink]
         )
         self.chat_session = self.model.start_chat(history=[],enable_automatic_function_calling=True)
  
@@ -107,7 +126,7 @@ class LLMModule:
         """Starts the LLM process, using FurhatClient."""
         print("Starting LLM module...")
         self.webcam_ready_event.wait()
-        self.furhatClient.speak("I am ready to assist you.")
+        self.furhatClient.speak("I am ready to assist you I an AI system, and not a human. The camera is being used to understand your emotion but nothing is being saved on the system")
 
         while not self.done_event.is_set():  # Main interaction loop
             user_input = self.furhatClient.listen()
