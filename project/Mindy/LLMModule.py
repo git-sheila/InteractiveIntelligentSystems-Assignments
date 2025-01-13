@@ -57,7 +57,7 @@ class LLMModule:
                  "If asked for additional mindfulness tips, suggest focusing on the present moment or practicing gratitude. Avoid long explanations or excessive guidance unless requested.\n\n"
                  
                 "If anyone says anyting extreme like they are suicidal or they would like to murder, calm them down.\n\n"
-                " Always wink after a joke, call for the self.furhatClient.gesture_wink function.\n\n"
+                " After the joke is executed, wink, call for the self.furhatClient.gesture_wink function.\n\n"
 
                 "Always keep your answers creative and with a caring tone. After conversing more than 15 times, keep the answers shorter than 1 paragraph."
                 "When asked for a breathing exercise, call for the function, assume that the breathing exercise has completed and do not guide through any breathing exercise."
@@ -162,7 +162,7 @@ class LLMModule:
                     self.chat_session.history.append({"role": "model", "parts": {"text":[response]}})
                 else:
                     # Fall back to LLM if no predefined response is found
-                    appendedString = "User: "+user_input+ ". Emotion detected from camera is  "+self.moodDetector.get_mood()
+                    appendedString = "User: "+ user_input + ". Emotion detected from camera is  "+self.moodDetector.get_mood()
                     print("**Message to LLM: "+ appendedString)
                     temp = self.chat_session.send_message(appendedString)
                     print(temp)

@@ -21,4 +21,4 @@ class Mood:
         # Return the emotion with the highest EMA value
         if self.ema_buffer:
             return max(self.ema_buffer, key=self.ema_buffer.get)
-        return None  # No emotion detected yet
+        return "Neutral"  # No emotion detected yet
