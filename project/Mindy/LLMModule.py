@@ -1,11 +1,12 @@
 from BreathingGuide import BreathingGuide
 from EmotionDetectionModule import EmotionDetectionModule
 from FurhatClient import FurhatClient
+from Mood import Mood
 import google.generativeai as genai
 import threading
 
 class LLMModule:
-    def __init__(self, webcam_ready_event, done_event,furhatClient: FurhatClient, emotionModule: EmotionDetectionModule, userdata: dict, doctor_info: dict, breathingModule: BreathingGuide ):
+    def __init__(self, webcam_ready_event, done_event,furhatClient: FurhatClient, emotionModule: EmotionDetectionModule, userdata: dict, doctor_info: dict, breathingModule: BreathingGuide , moodDetector: Mood):
         print("Initializing LLMModule...")
         self.webcam_ready_event = webcam_ready_event
         self.done_event = done_event
@@ -15,7 +16,7 @@ class LLMModule:
         self.doctor_info = doctor_info
         self.breathingModule = breathingModule
         self.exercise_completed = set()  # Track completed exercises
-
+        self.moodDetector= moodDetector
         # Predefined responses dictionary
         self.predefined_responses = {
             "hello": "Hello! How can I assist you with mindfulness today?",
@@ -161,7 +162,7 @@ class LLMModule:
                     self.chat_session.history.append({"role": "model", "parts": {"text":[response]}})
                 else:
                     # Fall back to LLM if no predefined response is found
-                    appendedString = "User: "+user_input+ ". Emotion detected from camera is  "+current_emotion
+                    appendedString = "User: "+user_input+ ". Emotion detected from camera is  "+self.moodDetector.get_mood()
                     print("**Message to LLM: "+ appendedString)
                     temp = self.chat_session.send_message(appendedString)
                     print(temp)

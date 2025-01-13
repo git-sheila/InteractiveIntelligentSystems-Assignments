@@ -7,10 +7,10 @@ from feat import Detector
 from feat.utils import FEAT_EMOTION_COLUMNS
 from PIL import Image as PILImage
 from FurhatClient import FurhatClient
-
+from Mood import Mood
 
 class EmotionDetectionModule:
-    def __init__(self, webcam_ready_event, done_event, furhatClient: FurhatClient):
+    def __init__(self, webcam_ready_event, done_event, furhatClient: FurhatClient, moodDetector: Mood):
         """
         Constructor: Initializes EmotionDetectionModule
         :param webcam_ready_event: threading.Event to signal webcam readiness
@@ -24,6 +24,7 @@ class EmotionDetectionModule:
         self.stable_emotion = None
         self.location_coordinates = None
         self.furhatClient = furhatClient
+        self.moodDetector = moodDetector
 
     def __del__(self):
         """ Destructor: Cleans up and stops the emotion detection thread """
@@ -85,6 +86,7 @@ class EmotionDetectionModule:
                                 self.stable_emotion = current_emotion
                                 print("Stable emotion detected: {self.stable_emotion}")
                                 self.emotions_detected.append(current_emotion)
+                                self.moodDetector.update_emotion(current_emotion)
                     else:
                         emotion_stability_count = 0  # Reset counter if emotion changes
                     last_emotion = current_emotion
