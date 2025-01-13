@@ -64,8 +64,6 @@ class EmotionDetectionModule:
                 if len(faces) > 0:
                     strongest_emotion = emotions.argmax(axis=1)[0]  # Get the strongest emotion
                     current_emotion = FEAT_EMOTION_COLUMNS[strongest_emotion]
-
-                    print("********* The face is " + str(faces) + "*******************************")
                     updown,leftright,temp = frame.shape
                     x_min, y_min, x_max, y_max, confidence = faces[0]
 
@@ -74,11 +72,10 @@ class EmotionDetectionModule:
                     y_center = (y_min + y_max) / 2
                     x_coordinate = round((leftright/2-x_center), 2)
                     y_coordinate = round((updown/2-y_center), 2)
+                    #set gaze
                     self.location_coordinates = "{:.2f},{:.2f},2".format(1*x_coordinate/leftright, 1*y_coordinate/updown)
 
                     self.furhatClient.attendLocation(self.location_coordinates)
-                    print("********* The location is " + self.location_coordinates + "*******************************")
-                    
                     print("Current emotion:", current_emotion)
                     # Check stability
                     if current_emotion == last_emotion:
