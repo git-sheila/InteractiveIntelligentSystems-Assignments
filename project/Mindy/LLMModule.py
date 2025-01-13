@@ -6,7 +6,6 @@ import threading
 
 class LLMModule:
     def __init__(self, webcam_ready_event, done_event,furhatClient: FurhatClient, emotionModule: EmotionDetectionModule, userdata: dict, doctor_info: dict, breathingModule: BreathingGuide ):
-        """Constructor: Initializes LLMModule with FurhatClient, user data, and doctor info."""
         print("Initializing LLMModule...")
         self.webcam_ready_event = webcam_ready_event
         self.done_event = done_event
@@ -107,42 +106,37 @@ class LLMModule:
         self.chat_session = self.model.start_chat(history=[],enable_automatic_function_calling=True)
  
     def __del__(self):
-        """Destructor: Cleans up LLMModule"""
-        print("Destroying LLMModule...")
- 
+        print("Destroyed LLMModule")
+        
     def extract_text(self, llm_response):
         # Navigate to the candidates and parts field
-
         parts = llm_response.parts
         for part in parts:
             # Check if the part contains text
             if "text" in part:
                 print ("Returning text")
                 return part
-        print ("Returning none, probably functioncall")
+        print ("Returning none, probably function call")
         return None
 
     def start(self):
-        """Starts the LLM process, using FurhatClient."""
-        print("Starting LLM module...")
         self.webcam_ready_event.wait()
         self.furhatClient.speak("I am ready to assist you I an AI system, and not a human. The camera is being used to understand your emotion but nothing is being saved on the system")
 
-        while not self.done_event.is_set():  # Main interaction loop
+        while not self.done_event.is_set():
             user_input = self.furhatClient.listen()
             if user_input:
                 if user_input.lower() in ["exit", "quit", "bye", "stop"]:  # Exit condition
                     self.furhatClient.speak(
                         "I'm glad I could help. Take care and reach out anytime you need assistance. Have a peaceful day!"
                     )
-                    self.chat_session.send_message("User has ended the session.")  # Log exit in chat history
+                    self.chat_session.send_message("User has ended the session.") 
                     break
 
                 # Get the current emotion from the EmotionDetectionModule
                 current_emotion = self.emotionModule.fetchCurrentEmotion()
 
                 # Try predefined response first
-                #predefined_response = self.predefined_response(user_input)
                 response = self.predefined_responses.get(user_input.lower())
                 print(response)
                 if response:
@@ -156,6 +150,7 @@ class LLMModule:
                     print("**Message to LLM: "+ appendedString)
                     temp = self.chat_session.send_message(appendedString)
                     print(temp)
+                    # the response contains both text and also function calling parts, for speach we need to extract the text from the response.
                     llm_response = self.extract_text(temp)
                     print(llm_response)
                     if llm_response and llm_response.text:

@@ -31,16 +31,12 @@ class FurhatClient:
         return message
 
     def getResponse(self, query: str) -> str:
-        """Generates a response based on input query."""
+        """Single function to speak and listen"""
         self.furhat.say(text=query, blocking=True)
         response = self.furhat.listen()
         message = getattr(response, 'message', '') 
         print(f"Furhat response: {message}")
         return message
-
-    def setGesture(self):
-        """Simulates setting a gesture."""
-        print("Furhat set a gesture.")
     
     def attendLocation(self, loc: str):
         self.furhat.attend(location=loc)
