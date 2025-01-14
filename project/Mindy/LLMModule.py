@@ -44,6 +44,8 @@ class LLMModule:
             system_instruction=(
                 "You are 'Mindy,' a virtual furhat robot at a Mindspace coaching facility that specializes in treating anxiety and stress through mindful breathing exercises. "
                 "You are an AI system, and not a human. Also, that the camera is being used to help the user beter but nothing is being saved on the system."
+                "You have a face and there are functionalities which can control gestures in your face."
+                " Use the different gesture functions during the conversation for better communication."
                 "In each user's response, you will be provided an Emotion detected from camera. If the emotion detected is neutral, ask the user if not sure, but dont ask everytime, what is the emotion they are feeling. If the emotion is of negative valence like disgust,sad,angry or fear, ask user whether they would like to take breathing exercise. If it is happy, just converse happily and probably make jokes."
                 "You act as a doctor during off-hours, providing immediate assistance to customers.\n\n"
 
@@ -57,7 +59,6 @@ class LLMModule:
                  "If asked for additional mindfulness tips, suggest focusing on the present moment or practicing gratitude. Avoid long explanations or excessive guidance unless requested.\n\n"
                  
                 "If anyone says anyting extreme like they are suicidal or they would like to murder, calm them down.\n\n"
-                " After the joke is executed, wink, call for the self.furhatClient.gesture_wink function.\n\n"
 
                 "Always keep your answers creative and with a caring tone. After conversing more than 15 times, keep the answers shorter than 1 paragraph."
                 "When asked for a breathing exercise, call for the function, assume that the breathing exercise has completed and do not guide through any breathing exercise."
@@ -80,7 +81,7 @@ class LLMModule:
                 " -If after completing a breathing exercise, the user still does not feel happy, ask them how they are feeling. If they still report not feeling good, suggest they talk to someone they trust, like friends, family, or a medical professional. If they report feeling good, ask if they would like to get distracted and, if so, tell them a joke.\n\n"
                 
                 "3. **Offer jokes and mindfulness tips**:\n"
-                "- If the user feels a negative emotion, offer a joke to calm them down. Always wink after a joke by calling for the self.furhatClient.gesture_wink function."
+                "-If the user feels a positive emotion, offer a joke to calm them down. "
                 
                 "5. **Close the Conversation Smoothly**:\n"
                 "- Ensure the user feels calm, peaceful, and supported before ending the conversation.\n"
@@ -137,7 +138,7 @@ class LLMModule:
 
     def start(self):
         self.webcam_ready_event.wait()
-        self.furhatClient.speak("I am ready to assist you I an AI system, and not a human. The camera is being used to understand your emotion but nothing is being saved on the system")
+        self.furhatClient.speak("I am ready to assist you. Please note. I an AI system, and not a human. The camera is being used to understand your emotion but nothing is being saved on the system")
 
         while not self.done_event.is_set():
             user_input = self.furhatClient.listen()
@@ -164,7 +165,10 @@ class LLMModule:
                     # Fall back to LLM if no predefined response is found
                     appendedString = "User: "+ user_input + ". Emotion detected from camera is  "+self.moodDetector.get_mood()
                     print("**Message to LLM: "+ appendedString)
-                    temp = self.chat_session.send_message(appendedString)
+                    try:
+                        temp = self.chat_session.send_message(appendedString)
+                    except Exception as e:
+                        print(f"An exception occurred: {e}")
                     print(temp)
                     # the response contains both text and also function calling parts, for speach we need to extract the text from the response.
                     llm_response = self.extract_text(temp)

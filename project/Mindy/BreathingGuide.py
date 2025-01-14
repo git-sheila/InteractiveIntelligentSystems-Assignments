@@ -11,31 +11,24 @@ class BreathingGuide:
         """Destructor: Cleans up BreathingGuide"""
         print("Destroying BreathingGuide...")
 
-    def start(self):
-        """Starts guiding the breathing exercise using FurhatClient."""
-        inhale = self.pattern.get('inhale', 3)
-        exhale = self.pattern.get('exhale', 3)
-        hold = self.pattern.get('hold', 2)
-        
-        self.furhatClient.speak("Starting breathing guide...")
-        print(f"Inhale for {inhale} seconds, hold for {hold} seconds, exhale for {exhale} seconds.")
-
-    def breathing_exercise(self, time_inhale: int, time_hold: int, time_exhale: int):
+    def breathing_exercise(self, time_inhale: int, time_hold: int, time_exhale: int, repeat: int):
         """ Start breathing exercise
         Args:
             time_inhale: a number from 1 to 10 for inhale count
             time_hold: a number from 1 to 10 for hold count
             time_exhale: a number from 1 to 10 for exhale count
+            repeat: number of time to repeat the exercise
         Returns:
             None
         """
+        self.furhatClient.speak("Lets start a"+ str(int(time_inhale)) +" "+str(int(time_hold))+" "+str(int(time_exhale))+ "breathing exercise for "+str(int(repeat))+"times")
+        for i in range(int(repeat)):
+            self.furhatClient.speak("Inhale")
+            self.furhatClient.gesture_inhale(time_inhale)
 
-        self.furhatClient.speak("Inhale deeply through your nose for " + str(int(time_inhale)) + " seconds.")
-        self.furhatClient.gesture_inhale(time_inhale)
+            self.furhatClient.speak("Hold")
+            self.furhatClient.gesture_hold(time_hold)
 
-        self.furhatClient.speak("Hold your breath for " + str(int(time_hold)) + " seconds.")
-        self.furhatClient.gesture_hold(time_hold)
-
-        self.furhatClient.speak("Exhale slowly through your mouth for " + str(int(time_exhale)) + " seconds.")
-        self.furhatClient.gesture_exhale(time_exhale)
+            self.furhatClient.speak("Exhale")
+            self.furhatClient.gesture_exhale(time_exhale)
         return
