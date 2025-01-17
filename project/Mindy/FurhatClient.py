@@ -26,7 +26,8 @@ class FurhatClient:
         self.furhat.set_led(red=144, green=238, blue=144) #gentle green
         response = self.furhat.listen()
         message = getattr(response, 'message', '') 
-        print(f"Furhat listened: {message}")
+        if(message):
+            print(f"Furhat listened: {message}")
         self.furhat.set_led(red=0, green=0, blue=0)
         return message
 
